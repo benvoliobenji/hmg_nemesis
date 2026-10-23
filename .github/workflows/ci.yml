@@ -1,0 +1,37 @@
+name: CI
+
+on:
+    pull_request:
+        branches: [main]
+    push:
+        branches: [main]
+
+concurrency:
+    group: ci-${{ github.ref }}
+    cancel-in-progress: true
+
+permissions:
+    contents: read
+
+jobs:
+    build:
+        name: Build Tar File
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v7
+
+            - name: Build from Makefile
+              run: make
+              working-directory: ./Sources
+
+            - name: Verify Tars
+              run: |
+                chmod +x ./Sources/usb_bundle/verify_tars.sh
+                ./Sources/usb_bundle/verify_tars.sh
+
+            - uses: actions/upload-artifact@v7
+              with:
+                  name: tars
+                  path: ./Sources/usb_bundle/*.tar
+                  retention-days: 30
