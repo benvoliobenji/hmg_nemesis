@@ -17,20 +17,50 @@ jobs:
     build:
         name: Build Tar File
         runs-on: ubuntu-latest
+        env:
+            # Pinned toolchain versions. JDK 11 is the newest that still accepts
+            # the Makefile's `-source 1.7 -target 1.7`; build-tools 30.0.3 is the
+            # last line that still ships aapt (v1) alongside d8; NDK r21e matches
+            # native/Makefile's hardcoded default.
+            ANDROID_PLATFORM: android-30
+            ANDROID_BUILD_TOOLS: 30.0.3
+            ANDROID_NDK_VERSION: 21.4.7075529
         steps:
             - name: Checkout repository
               uses: actions/checkout@v7
 
+            - name: Set up JDK
+              uses: actions/setup-java@v4
+              with:
+                  distribution: temurin
+                  java-version: "11"
+
+            - name: Set up Android SDK
+              uses: android-actions/setup-android@v3
+
+            - name: Install Android SDK packages (platform, build-tools, NDK r21e)
+              run: |
+                yes | sdkmanager --licenses > /dev/null || true
+                sdkmanager --install \
+                  "platforms;${ANDROID_PLATFORM}" \
+                  "build-tools;${ANDROID_BUILD_TOOLS}" \
+                  "ndk;${ANDROID_NDK_VERSION}"
+                # Expose toolchain locations to later steps. aapt/d8/zipalign go on
+                # PATH; NDK and ANDROID_JAR paths are passed to make below.
+                echo "${ANDROID_SDK_ROOT}/build-tools/${ANDROID_BUILD_TOOLS}" >> "$GITHUB_PATH"
+                echo "ANDROID_NDK_HOME=${ANDROID_SDK_ROOT}/ndk/${ANDROID_NDK_VERSION}" >> "$GITHUB_ENV"
+                echo "ANDROID_JAR=${ANDROID_SDK_ROOT}/platforms/${ANDROID_PLATFORM}/android.jar" >> "$GITHUB_ENV"
+
             - name: Build Native
-              run: make native
+              run: make native NDK="$ANDROID_NDK_HOME"
               working-directory: ./Sources
 
             - name: Build Manager
-              run: make manager
+              run: make manager ANDROID_JAR="$ANDROID_JAR"
               working-directory: ./Sources
 
             - name: Build Troubleshooter
-              run: make troubleshooter
+              run: make troubleshooter NDK="$ANDROID_NDK_HOME" ANDROID_JAR="$ANDROID_JAR"
               working-directory: ./Sources
 
             - name: Verify Tars
