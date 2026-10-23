@@ -21,8 +21,16 @@ jobs:
             - name: Checkout repository
               uses: actions/checkout@v7
 
-            - name: Build from Makefile
-              run: make
+            - name: Build Native
+              run: make native
+              working-directory: ./Sources
+
+            - name: Build Manager
+              run: make manager
+              working-directory: ./Sources
+
+            - name: Build Troubleshooter
+              run: make troubleshooter
               working-directory: ./Sources
 
             - name: Verify Tars
