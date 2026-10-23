@@ -31,13 +31,18 @@ jobs:
               uses: actions/checkout@v7
 
             - name: Set up JDK
-              uses: actions/setup-java@v4
+              uses: actions/setup-java@v5
               with:
                   distribution: temurin
                   java-version: "17"
 
             - name: Set up Android SDK
               uses: android-actions/setup-android@v3
+              with:
+                  # Skip the action's default package set; its legacy "tools"
+                  # package was removed from Google's repo and now errors. The
+                  # next step installs exactly the packages this build needs.
+                  packages: ""
 
             - name: Install Android SDK packages (platform, build-tools, NDK r21e)
               run: |
