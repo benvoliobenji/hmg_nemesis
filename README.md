@@ -2,6 +2,8 @@
 
 Own your car, to its fullest.
 
+App store is coming soon at [NEMESIS Website, where Discord link is also available](https://xwtk.cloud/services/nemesis).
+
 ### **Support NEMESIS development and research**
 
 You may pledge a small amount to help cover research costs for Gen5W systems as well as NEMESIS development. It is completely optional and is considered as a gratitude for the done work.
@@ -19,13 +21,32 @@ You bear complete responsibility for any procedure with your car and its compone
 
 Discover pre-made packages for you to install on your car. Browse catalog [here](Packages/README.md).
 
-## **Quick Installation Guidance**
+## Compatibility Check
 
 For your car to be compatible with NEMESIS, it has to:
 
 1. Have an Android based Gen5W HU (version must have S5W_M in it in General Settings > SW Info). S5W_L is not supported, it is a fundamentally different hardware and software combination.
 
 2. It has to have OTA update support (not necessary to have OTA Update subscription) as NEMESIS utilizes a flaw in the OTA update logic as an entry point for its installation procedure. Some cars may still not be compatible even in that case, it can only be understood once you try to install.
+
+### **Cars known not to work with NEMESIS**
+
+| Name | Description |
+| ---- | ----------- |
+| Any car with no OTA updates capability | NEMESIS uses a flaw in OTA updates system to install itself, if your car does not have OTA updates, it does not have that flaw. |
+| Any Canadian HMG car | No Canadian HMG vehicle has support for OTA updates, despite Update OTA being shown for some in the Engineering Mode menu. |
+| Any car with S5W_L HU | Fundamentally different hardware and software architecture, does not run Android, NEMESIS cannot be ported in any shape or form there. |
+| Hyundai Elantra / Kia Forte / Hyundai Ioniq 6 | Despite having OTA updates support, these cars use different schemes which do not have the required flaw for NEMESIS. |
+
+### **Will there be support for incompatible cars in the future?**
+
+**Not** guaranteed, other members are working on porting NEMESIS to cars such as Ioniq 6 and Canadian vehicles, check Discord for more information.
+
+### **What will happen if I try to install?**
+
+Most likely nothing, NEMESIS won't install.
+
+## **Quick Installation Guidance**
 
 | Step | Guidance |
 | ---- | -------- |
